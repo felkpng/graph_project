@@ -1,14 +1,16 @@
 #include "Graph.h"
 #include <sstream>
+#include <fstream>
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph) {
     bool toConsole = (&os == &std::cout);
+    std::string data;
+    std::map<std::string, std::vector<std::string>> adjacency = graph.getAdjacency();
 
     if (toConsole) {
         std::system("cls");
-        std::string data = "Список смежности графа\n";
-        std::map<std::string, std::vector<std::string>> adjacency = graph.getAdjacency();
+        data = "Список смежности графа\n";
 
         for (const auto& pair : adjacency) {
             data = data + pair.first + ": ";
@@ -17,10 +19,21 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
             }
             data += "\n";
         }
+        data += "\n";
 
         os << data;
     }
-    else {}
+    else {
+        for (const auto& pair : adjacency) {
+            data += pair.first + "\n";
+            for (int x = 0; x < pair.second.size(); x++) {
+                data += pair.second[x] + " ";
+            }
+            data += "\n";
+        }
+
+        os << data;
+    }
 
     return os;
 }
@@ -79,5 +92,18 @@ bool Graph::isWay(std::string start, std::string stop) {
 }
 
 void Graph::saveToFile() {
+    system("cls");
+    std::cout << "Имя файла для сохранения: ";
+    std::string fileName;
 
+    getline(std::cin, fileName);
+
+    std::ofstream outFile(fileName);
+
+    if (outFile.is_open()){
+        outFile << *this;
+        outFile.close();
+    }
+    else
+        std::cout << "Ошибка открытия файла";
 }

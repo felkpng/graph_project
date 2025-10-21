@@ -47,8 +47,11 @@ void Menu(Graph& graph) {
         case 2:
             break;
         case 3:
-            system("cls");
             cout << graph;
+            break;
+        case 4:
+            graph.saveToFile();
+            break;
         }
     }
 }
