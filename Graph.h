@@ -8,11 +8,15 @@ class Graph
 private:
 	std::map<std::string, std::vector<std::string>> adjacency;
 public:
-	bool isWay(std::string start, std::string stop);
+	bool isWay(const std::string start, const std::string stop);
+	bool isConnected();
+
 	std::map<std::string, std::vector<std::string>> getAdjacency() const { return adjacency; };
 	void setAdjacency(const std::map<std::string, std::vector<std::string>> a) { adjacency = a; }
 	void saveToFile();
 	void loadFromFile();
+	void checkWay();
+	void checkConnection();
 
 	friend std::ostream& operator<<(std::ostream& os, const Graph& graph);
 	friend std::istream& operator>>(std::istream& os, Graph& graph);

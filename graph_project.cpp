@@ -53,12 +53,17 @@ void Menu(Graph& graph) {
         case 4:
             graph.saveToFile();
             break;
+        case 5:
+            graph.checkWay();
+            break;
+        case 6:
+            graph.checkConnection();
+            break;
         }
     }
 }
 
-int main()
-{
+int main() {
     Graph graph;
     setlocale(LC_ALL, "rus");
 

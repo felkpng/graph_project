@@ -92,14 +92,13 @@ std::istream& operator>>(std::istream& is, Graph& graph) {
 
             adjacency[name] = neighbors;
         }
-
-        graph.setAdjacency(adjacency);
     }
 
+    graph.setAdjacency(adjacency);
     return is;
 }
 
-bool Graph::isWay(std::string start, std::string stop) {
+bool Graph::isWay(const std::string start, const std::string stop) {
     if (start == stop) return true;
     std::map<std::string, std::vector<std::string>> adjacency = getAdjacency();
 
@@ -110,6 +109,19 @@ bool Graph::isWay(std::string start, std::string stop) {
     }
 
     return false;
+}
+
+bool Graph::isConnected() {
+    std::vector<std::string> keys;
+    for (const auto& pair : adjacency) {
+        keys.push_back(pair.first);
+    }
+
+    for (std::string key1 : keys)
+        for (std::string key2 : keys)
+            if (!isWay(key1, key2)) return false;
+    return true;
+
 }
 
 void Graph::saveToFile() {
@@ -144,4 +156,29 @@ void Graph::loadFromFile() {
     }
     else
         std::cout << "Ошибка открытия файла" << std::endl;
+}
+
+void Graph::checkWay() {
+    std::system("cls");
+    std::string start = " ";
+    while (start.find(' ') != std::string::npos) {
+        std::cout << "Пункт 1: ";
+        std::getline(std::cin, start);
+    }
+
+    std::string stop = " ";
+    while (stop.find(' ') != std::string::npos) {
+        std::cout << "Пункт 2: ";
+        std::getline(std::cin, stop);
+    }
+
+    if (isWay(start, stop)) std::cout << "Путь существует!" << std::endl;
+    else std::cout << "Пути не существует!" << std::endl;
+}
+
+void Graph::checkConnection() {
+    std::system("cls");
+
+    if (isConnected()) std::cout << "Граф связанный!!!" << std::endl;
+    else std::cout << "Граф не связанный((" << std::endl;
 }
