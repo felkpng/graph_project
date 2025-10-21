@@ -15,7 +15,8 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
         for (const auto& pair : adjacency) {
             data = data + pair.first + ": ";
             for (int x = 0; x < pair.second.size(); x++) {
-                data += pair.second[x] + " ";
+                data += pair.second[x];
+                if (x + 1 != pair.second.size()) data += " ";
             }
             data += "\n";
         }
@@ -37,13 +38,13 @@ std::ostream& operator<<(std::ostream& os, const Graph& graph) {
 
     return os;
 }
-
+ 
 std::istream& operator>>(std::istream& is, Graph& graph) {
     bool fromConsole = (&is == &std::cin);
+    std::map<std::string, std::vector<std::string>> adjacency;
 
     if (fromConsole) {
         std::string name = " ";
-        std::map<std::string, std::vector<std::string>> adjacency;
 
         while (name != "") {
             std::cout << "(Чтобы закончить ввод пунктов нажмите Enter)" << std::endl;
@@ -70,10 +71,30 @@ std::istream& operator>>(std::istream& is, Graph& graph) {
 
             if (name != "") adjacency[name] = v;
         }
+    }
+    else {
+        std::string name;
+        std::string line;
+
+        while (true) {
+            if (!std::getline(is, name)) break;
+            if (name.empty()) continue;
+            if (!std::getline(is, line)) break;
+
+            std::istringstream iss(line);
+            std::vector<std::string> neighbors;
+            std::string neighbor;
+
+            while (iss >> neighbor)
+                neighbors.push_back(neighbor);
+
+            
+
+            adjacency[name] = neighbors;
+        }
 
         graph.setAdjacency(adjacency);
     }
-    else {}
 
     return is;
 }
@@ -106,4 +127,21 @@ void Graph::saveToFile() {
     }
     else
         std::cout << "Ошибка открытия файла";
+}
+
+void Graph::loadFromFile() {
+    system("cls");
+    std::cout << "Имя файла для загрузки: ";
+    std::string fileName;
+
+    getline(std::cin, fileName);
+
+    std::ifstream inFile(fileName);
+
+    if (inFile.is_open()) {
+        inFile >> *this;
+        inFile.close();
+    }
+    else
+        std::cout << "Ошибка открытия файла" << std::endl;
 }

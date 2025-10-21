@@ -45,6 +45,7 @@ void Menu(Graph& graph) {
             cin >> graph;
             break;
         case 2:
+            graph.loadFromFile();
             break;
         case 3:
             cout << graph;

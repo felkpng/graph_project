@@ -12,7 +12,9 @@ public:
 	std::map<std::string, std::vector<std::string>> getAdjacency() const { return adjacency; };
 	void setAdjacency(const std::map<std::string, std::vector<std::string>> a) { adjacency = a; }
 	void saveToFile();
+	void loadFromFile();
+
+	friend std::ostream& operator<<(std::ostream& os, const Graph& graph);
+	friend std::istream& operator>>(std::istream& os, Graph& graph);
 };
 
-std::ostream& operator<<(std::ostream& os, const Graph& graph);
-std::istream& operator>>(std::istream& os, Graph& graph);
