@@ -3,6 +3,7 @@
 #include "fstream"
 #include "iostream"
 #include <filesystem>
+#include <queue>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -33,7 +34,35 @@ bool dfs_method(Graph& graph) {
     return true;
 }
 
-bool bfs_method(Graph& graph) { return true; }
+bool bfs_method(Graph& graph) {
+    map<string, vector<string>> adjacency = graph.getAdjacency();
+    map<string, bool> visited;
+    graph.get_keys();
+
+    for (const auto& k : graph.keys)
+        visited[k] = false;
+
+    string start = graph.keys[0];
+    queue<string> queue;
+    queue.push(start);
+    visited[start] = true;
+
+    while (!queue.empty()) {
+        string i = queue.front();
+        queue.pop();
+
+        for (string u : adjacency[i])
+            if (!visited[u]) {
+                visited[u] = true;
+                queue.push(u);
+            }
+    }
+
+    for (const auto& pair : visited)
+        if (!pair.second)
+            return false;
+    return true;
+}
 
 bool dsu_method(Graph& graph) { return true; }
 
@@ -61,13 +90,13 @@ void tester() {
 
     for (int i = 0; i < graphs.size(); i++) {
         const auto& dfs_result = dfs_method(graphs[i]);
-        //const auto& bfs_result = bfs_method(graphs[i]);
+        const auto& bfs_result = bfs_method(graphs[i]);
         //const auto& dsu_result = dsu_method(graphs[i]);
         //const auto& floyd_result = floydWarshall_method(graphs[i]);
 
         cout << "Graph" << i + 1 << endl;
         cout << "DFS:           " << (dfs_result ? "связанный" : "не связанный") << endl;
-        //cout << "BFS:           " << (bfs_result ? "связанный" : "не связанный") << endl;
+        cout << "BFS:           " << (bfs_result ? "связанный" : "не связанный") << endl;
         //cout << "DSU:           " << (dsu_result ? "связанный" : "не связанный") << endl;
         //cout << "FloydWarshall: " << (floyd_result ? "связанный" : "не связанный") << endl << endl;
     }
