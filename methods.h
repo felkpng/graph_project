@@ -200,15 +200,30 @@ void tester() {
     cout << "Загруженно " << graphs.size() << " графов\n\n";
 
     for (int i = 0; i < graphs.size(); i++) {
+        auto start = chrono::high_resolution_clock::now();
         const auto& dfs_result = dfs_method(graphs[i]);
+        auto end = chrono::high_resolution_clock::now();
+        auto dfs_duration = chrono::duration_cast<chrono::microseconds>(end - start);
+
+        start = chrono::high_resolution_clock::now();
         const auto& bfs_result = bfs_method(graphs[i]);
+        end = chrono::high_resolution_clock::now();
+        auto bfs_duration = chrono::duration_cast<chrono::microseconds>(end - start);
+
+        start = chrono::high_resolution_clock::now();
         const auto& dsu_result = dsu_method(graphs[i]);
+        end = chrono::high_resolution_clock::now();
+        auto dsu_duration = chrono::duration_cast<chrono::microseconds>(end - start);
+
+        start = chrono::high_resolution_clock::now();
         const auto& floyd_result = floydWarshall_method(graphs[i]);
+        end = chrono::high_resolution_clock::now();
+        auto floyd_duration = chrono::duration_cast<chrono::microseconds>(end - start);
 
         cout << "Graph" << i + 1 << endl;
-        cout << "DFS:           " << (dfs_result ? "связанный" : "не связанный") << endl;
-        cout << "BFS:           " << (bfs_result ? "связанный" : "не связанный") << endl;
-        cout << "DSU:           " << (dsu_result ? "связанный" : "не связанный") << endl;
-        cout << "FloydWarshall: " << (floyd_result ? "связанный" : "не связанный") << endl << endl;
+        cout << "DFS:           " << (dfs_result ? "связанный" : "не связанный") << " | " << dfs_duration.count() << " мкс" << endl;
+        cout << "BFS:           " << (bfs_result ? "связанный" : "не связанный") << " | " << bfs_duration.count() << " мкс" << endl;
+        cout << "DSU:           " << (dsu_result ? "связанный" : "не связанный") << " | " << dsu_duration.count() << " мкс" << endl;
+        cout << "FloydWarshall: " << (floyd_result ? "связанный" : "не связанный") << " | " << floyd_duration.count() << " мкс" << endl << endl;
     }
 }
