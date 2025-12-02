@@ -3,6 +3,7 @@
 #include "fstream"
 #include "iostream"
 #include <filesystem>
+#include <algorithm>
 #include <queue>
 #include <set>
 
@@ -121,7 +122,62 @@ bool dsu_method(Graph& graph) {
     return (sets.size() == 1);
 }
 
-bool floydWarshall_method(Graph& graph) { return true; }
+vector<vector<int>> convertAdjacencyToMatrix(const map<string, vector<string>>& adjacency) {
+    vector<string> vertices;
+    const int INF = 1e9;
+    for (const auto& pair : adjacency) {
+        vertices.push_back(pair.first);
+    }
+
+    map<string, int> vertex_to_id;
+    for (int i = 0; i < vertices.size(); ++i) {
+        vertex_to_id[vertices[i]] = i;
+    }
+
+    int N = vertices.size();
+    vector<vector<int>> dist(N, vector<int>(N, INF));
+    for (int i = 0; i < N; ++i) {
+        dist[i][i] = 0;
+    }
+
+    for (const auto& pair : adjacency) {
+        string u_str = pair.first;
+        int u_id = vertex_to_id[u_str];
+
+        for (const string& v_str : pair.second) {
+            int v_id = vertex_to_id[v_str];
+            dist[u_id][v_id] = 1;
+        }
+    }
+
+    return dist;
+}
+
+bool floydWarshall_method(Graph& graph) {
+    vector<vector<int>> dist = convertAdjacencyToMatrix(graph.getAdjacency());
+    int N = dist.size();
+    const int INF = 1e9;
+
+    for (int k = 0; k < N; ++k) {
+        for (int i = 0; i < N; ++i) {
+            for (int j = 0; j < N; ++j) {
+                if (dist[i][k] != INF && dist[k][j] != INF) {
+                    dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (i != j && dist[i][j] == INF) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
 
 void LoadData(vector<Graph>& graphs) {
     string directory_path = "./data/";
@@ -147,12 +203,12 @@ void tester() {
         const auto& dfs_result = dfs_method(graphs[i]);
         const auto& bfs_result = bfs_method(graphs[i]);
         const auto& dsu_result = dsu_method(graphs[i]);
-        //const auto& floyd_result = floydWarshall_method(graphs[i]);
+        const auto& floyd_result = floydWarshall_method(graphs[i]);
 
         cout << "Graph" << i + 1 << endl;
         cout << "DFS:           " << (dfs_result ? "связанный" : "не связанный") << endl;
         cout << "BFS:           " << (bfs_result ? "связанный" : "не связанный") << endl;
         cout << "DSU:           " << (dsu_result ? "связанный" : "не связанный") << endl;
-        //cout << "FloydWarshall: " << (floyd_result ? "связанный" : "не связанный") << endl << endl;
+        cout << "FloydWarshall: " << (floyd_result ? "связанный" : "не связанный") << endl << endl;
     }
 }
